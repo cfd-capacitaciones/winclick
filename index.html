@@ -1404,6 +1404,136 @@
 
     .reward-modal-close-bottom:hover { background: #E5E7EB; color: #374151; }
 
+    /* ================================================================
+       VIDEO DE BIENVENIDA — CONTROLES PERSONALIZADOS
+       ================================================================ */
+
+    /* El <video> ocupa todo el ancho del wrapper, sin controles nativos */
+    #welcome-video {
+      width: 100%;
+      display: block;
+      border-radius: 12px 12px 0 0;
+      background: #000;
+      max-height: 420px;
+      object-fit: contain;
+    }
+
+    /* Barra de controles debajo del video */
+    .video-custom-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: #1A202C;
+      padding: 0.6rem 1rem;
+      border-radius: 0 0 12px 12px;
+    }
+
+    /* Botón Play/Pause */
+    .video-play-btn {
+      background: var(--color-orange);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+
+    .video-play-btn:hover { background: var(--color-orange-dark); transform: scale(1.08); }
+
+    /* Barra de progreso (solo lectura) */
+    .video-progress-track {
+      flex: 1;
+      height: 6px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 99px;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    .video-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--color-orange), var(--color-yellow));
+      border-radius: 99px;
+      transition: width 0.5s linear;
+    }
+
+    /* Tiempo transcurrido */
+    .video-time {
+      color: rgba(255,255,255,0.65);
+      font-size: 0.72rem;
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+      min-width: 2.5rem;
+      text-align: right;
+    }
+
+    /* ================================================================
+       BANNER DE CANDADO — DEBAJO DEL HEADER
+       ================================================================ */
+
+    .video-lock-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 0.85rem 1.5rem;
+      font-size: 0.92rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      text-align: center;
+      transition: all 0.5s ease;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    /* Estado BLOQUEADO: fondo oscuro llamativo */
+    .video-lock-banner--locked {
+      background: linear-gradient(135deg, #1A202C, #2D3748);
+      color: #FFFFFF;
+      border-bottom: 3px solid var(--color-orange);
+    }
+
+    /* Estado DESBLOQUEADO: fondo verde éxito */
+    .video-lock-banner--unlocked {
+      background: linear-gradient(135deg, #065F46, #047857);
+      color: #FFFFFF;
+      border-bottom: 3px solid #34D399;
+    }
+
+    /* ================================================================
+       BLOQUEO DEL CONTENIDO DE CURSOS
+       ================================================================ */
+
+    /* Envuelve todo el <main> con transición suave */
+    #main-content {
+      transition: opacity 0.6s ease, filter 0.6s ease;
+    }
+
+    /* Estado BLOQUEADO: opacidad reducida + desenfoque leve */
+    #main-content.content-locked {
+      opacity: 0.45;
+      filter: blur(2px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* Estado DESBLOQUEADO: transición limpia de vuelta */
+    #main-content.content-unlocked {
+      opacity: 1;
+      filter: none;
+      pointer-events: auto;
+      user-select: auto;
+    }
+
   </style>
 </head>
 
@@ -1484,15 +1614,61 @@
 
              Reemplaza SOLO el contenido interno del div.video-wrapper
         ── -->
+        <!-- VIDEO DE BIENVENIDA — CANDADO OBLIGATORIO
+             El archivo VideoBienvenida.mp4 debe estar en la misma
+             carpeta que este index.html.
+             Sin controles completos: solo se puede dar Play/Pause.
+        -->
         <div class="video-wrapper" role="region" aria-label="Video de bienvenida">
-          <div class="video-placeholder" tabindex="0" role="img" aria-label="Reproductor de video pendiente de configurar">
-            <div class="play-icon" aria-hidden="true">▶</div>
-            <p>📹 Video de Bienvenida — <em>Inserta tu video aquí</em></p>
+          <video
+            id="welcome-video"
+            src="VideoBienvenida.mp4"
+            playsinline
+            preload="metadata"
+            aria-label="Video de bienvenida al entrenamiento CFD WIN"
+          >
+            Tu navegador no soporta la reproducción de video.
+          </video>
+
+          <!-- Capa de control personalizada: solo Play/Pause -->
+          <div class="video-custom-controls">
+            <button
+              id="video-play-btn"
+              class="video-play-btn"
+              type="button"
+              aria-label="Reproducir video"
+              onclick="toggleVideoPlay()"
+            >
+              <span id="video-play-icon">▶</span>
+            </button>
+
+            <!-- Barra de progreso (solo lectura, no permite adelantar) -->
+            <div class="video-progress-track"
+                 role="progressbar"
+                 aria-valuemin="0"
+                 aria-valuemax="100"
+                 aria-valuenow="0"
+                 id="video-progress-bar">
+              <div class="video-progress-fill" id="video-progress-fill"></div>
+            </div>
+
+            <span class="video-time" id="video-time">0:00</span>
           </div>
         </div>
 
       </div>
     </header>
+
+    <!-- BANNER DE CANDADO / DESBLOQUEO
+         Visible debajo del header: cambia apariencia al terminar el video.
+    -->
+    <div id="video-lock-banner"
+         class="video-lock-banner video-lock-banner--locked"
+         role="status"
+         aria-live="polite">
+      <span id="video-lock-icon">🔒</span>
+      <span id="video-lock-text"> Mira el video completo para desbloquear tu entrenamiento</span>
+    </div>
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content" id="main-content">
@@ -2604,6 +2780,7 @@
           checkRewardButtonState('b2'); // Verifica estado del botón de recompensa Bloque 2
           checkRewardButtonState('b3'); // Verifica estado del botón de recompensa Bloque 3
           checkRewardButtonState('bk'); // Verifica estado del botón de recompensa Backoffice
+          initVideoLock();             // Aplica estado del candado de video
         }, 500);
 
       } else {
@@ -3028,6 +3205,130 @@
 
        Vuelve a comentarla cuando termines de probar.
     ─────────────────────────────────────────────────────────── */
+
+    /* ══════════════════════════════════════════════════════════════
+       9. VIDEO DE BIENVENIDA — SISTEMA DE CANDADO OBLIGATORIO
+    ══════════════════════════════════════════════════════════════
+
+       Clave en LocalStorage: 'cfd_video_visto'
+       Valor cuando se completó: '1'
+    ══════════════════════════════════════════════════════════════ */
+
+    const VIDEO_STORAGE_KEY = 'cfd_video_visto';
+
+    const welcomeVideo   = document.getElementById('welcome-video');
+    const playBtn        = document.getElementById('video-play-btn');
+    const playIcon       = document.getElementById('video-play-icon');
+    const progressFill   = document.getElementById('video-progress-fill');
+    const progressBar    = document.getElementById('video-progress-bar');
+    const videoTimeEl    = document.getElementById('video-time');
+    const lockBanner     = document.getElementById('video-lock-banner');
+    const lockIcon       = document.getElementById('video-lock-icon');
+    const lockText       = document.getElementById('video-lock-text');
+    const mainContent    = document.getElementById('main-content');
+
+    /** Formatea segundos como M:SS */
+    function formatTime(secs) {
+      if (!secs || isNaN(secs)) return '0:00';
+      const m = Math.floor(secs / 60);
+      const s = Math.floor(secs % 60);
+      return `${m}:${s.toString().padStart(2, '0')}`;
+    }
+
+    /** Desbloquea todo el contenido de cursos */
+    function unlockCourseContent() {
+      // 1. Quitar bloqueo del contenido
+      if (mainContent) {
+        mainContent.classList.remove('content-locked');
+        mainContent.classList.add('content-unlocked');
+      }
+
+      // 2. Actualizar banner
+      if (lockBanner) {
+        lockBanner.classList.remove('video-lock-banner--locked');
+        lockBanner.classList.add('video-lock-banner--unlocked');
+      }
+      if (lockIcon)  lockIcon.textContent = '✅';
+      if (lockText)  lockText.textContent  = ' ¡Entrenamiento Desbloqueado! Ya puedes acceder a todos los módulos.';
+
+      // 3. Guardar en LocalStorage para que persista en recargas
+      localStorage.setItem(VIDEO_STORAGE_KEY, '1');
+    }
+
+    /** Aplica el estado inicial (bloqueado o ya visto) al cargar */
+    function initVideoLock() {
+      if (!welcomeVideo) return;
+
+      const yaVisto = localStorage.getItem(VIDEO_STORAGE_KEY) === '1';
+
+      if (yaVisto) {
+        // El usuario ya vio el video — desbloquear de inmediato sin animación
+        if (mainContent) {
+          mainContent.classList.remove('content-locked');
+          mainContent.classList.add('content-unlocked');
+        }
+        if (lockBanner) {
+          lockBanner.classList.remove('video-lock-banner--locked');
+          lockBanner.classList.add('video-lock-banner--unlocked');
+        }
+        if (lockIcon)  lockIcon.textContent = '✅';
+        if (lockText)  lockText.textContent  = ' ¡Entrenamiento Desbloqueado! Ya puedes acceder a todos los módulos.';
+      } else {
+        // Primera visita — bloquear el contenido
+        if (mainContent) {
+          mainContent.classList.add('content-locked');
+        }
+      }
+    }
+
+    /* ── Controles del video ── */
+
+    /** Alterna Play / Pause */
+    function toggleVideoPlay() {
+      if (!welcomeVideo) return;
+      if (welcomeVideo.paused) {
+        welcomeVideo.play();
+      } else {
+        welcomeVideo.pause();
+      }
+    }
+
+    if (welcomeVideo) {
+
+      // Actualizar ícono del botón según el estado
+      welcomeVideo.addEventListener('play',  () => { if (playIcon) playIcon.textContent = '⏸'; });
+      welcomeVideo.addEventListener('pause', () => { if (playIcon) playIcon.textContent = '▶'; });
+
+      // Actualizar barra de progreso y tiempo en tiempo real
+      welcomeVideo.addEventListener('timeupdate', () => {
+        if (!welcomeVideo.duration) return;
+        const pct = (welcomeVideo.currentTime / welcomeVideo.duration) * 100;
+        if (progressFill) progressFill.style.width = `${pct}%`;
+        if (progressBar)  progressBar.setAttribute('aria-valuenow', Math.round(pct));
+        if (videoTimeEl)  videoTimeEl.textContent = formatTime(welcomeVideo.currentTime);
+      });
+
+      // ★ EVENTO PRINCIPAL: video terminado → desbloquear cursos
+      welcomeVideo.addEventListener('ended', () => {
+        if (playIcon) playIcon.textContent = '▶';
+        unlockCourseContent();
+      });
+
+      // Bloquear el seek: si el usuario intenta adelantar, lo regresamos
+      // (solo aplica si acceden al video desde las DevTools o elementos nativos)
+      let lastTime = 0;
+      welcomeVideo.addEventListener('timeupdate', () => {
+        // Si el usuario avanzó más de 2 s de forma anormal, lo devolvemos
+        if (welcomeVideo.currentTime > lastTime + 2 && !welcomeVideo.ended) {
+          welcomeVideo.currentTime = lastTime;
+        } else {
+          lastTime = welcomeVideo.currentTime;
+        }
+      });
+    }
+
+    // Inicializar al cargar el dashboard (se llama después del login también)
+    initVideoLock();
 
   </script>
 
