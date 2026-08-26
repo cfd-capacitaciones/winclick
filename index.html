@@ -73,7 +73,7 @@
     #login-screen {
       position: fixed;
       inset: 0;
-      background: linear-gradient(135deg, #1A202C 0%, #2D3748 50%, #1A202C 100%);
+      background: linear-gradient(160deg, #0A0A0A 0%, #111111 50%, #1A1A1A 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1092,14 +1092,15 @@
        FOOTER
        ============================================================ */
     .site-footer {
-      background: #1A202C;
-      color: rgba(255,255,255,0.5);
+      background: #000000;
+      color: rgba(255,255,255,0.55);
       text-align: center;
       padding: 1.5rem 1rem;
       font-size: 0.8rem;
     }
 
-    .site-footer strong { color: rgba(255,255,255,0.8); }
+    .site-footer strong { color: rgba(255,255,255,0.9); }
+    .site-footer .footer-credit { color: rgba(255,255,255,0.35); font-size: 0.68rem; margin-top: 0.5rem; }
 
     /* ============================================================
        ANIMACIONES
@@ -1546,12 +1547,13 @@
   <div id="login-screen" role="dialog" aria-modal="true" aria-label="Inicio de sesión">
     <div class="login-card">
 
-      <!-- ── LOGO LOGIN ──
-           Reemplaza este div por tu imagen:
-           <img src="https://raw.githubusercontent.com/TU_USER/TU_REPO/main/img/logo.png"
-                alt="Logo WIN" style="max-height:80px;" />
-      ── -->
-      <div class="login-logo-placeholder" aria-label="Logo WIN" role="img">WIN</div>
+      <div class="header-logo" style="margin-bottom:1rem;">
+        <img
+          src="logo_winnaranja.png"
+          alt="Logo WinClic"
+          style="max-height:90px; width:auto; display:block; margin:0 auto;"
+        />
+      </div>
 
       <h1 class="login-title">¡Bienvenido a WinClic!🚀</h1>
       <p class="login-subtitle">Desafío CFD — Ingresa la contraseña de tu agencia para continuar</p>
@@ -1591,7 +1593,11 @@
                   alt="Logo WIN" style="max-height:80px; filter:brightness(0) invert(1);" />
         ── -->
         <div class="header-logo">
-          <div class="header-logo-placeholder" aria-label="Logo WIN">WIN</div>
+          <img
+            src="logo_winblanco.png"
+            alt="Logo WinClic"
+            style="max-height:80px; width:auto; display:block;"
+          />
         </div>
 
         <h1 class="header-title">Tu Ruta hacia el Éxito 🚀</h1>
@@ -2650,8 +2656,9 @@
     </main>
 
     <footer class="site-footer">
-      <p>© 2026 <strong>WIN Empresas SAC</strong> — Desafío CFD | Portal de Capacitación Interno</p>
+      <p>© 2026 <strong>WinClic</strong> — Desafío CFD | Portal de Capacitación Win</p>
       <p style="margin-top:0.35rem;font-size:0.72rem;">El progreso se guarda localmente en este dispositivo y navegador.</p>
+      <p class="footer-credit">Pensado y creado por <strong style="color:rgba(255,255,255,0.5);">Madeloun Terrel</strong></p>
     </footer>
 
   </div><!-- /#dashboard -->
